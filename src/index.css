@@ -8,89 +8,90 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Agricultural Theme - Earth & Growth */
+    --background: 35 30% 97%;
+    --foreground: 30 20% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 30 20% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 30 20% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary: Rich Agriculture Green */
+    --primary: 142 76% 36%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 142 60% 65%;
+    --primary-glow: 142 76% 55%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary: Warm Earth Brown */
+    --secondary: 30 60% 30%;
+    --secondary-foreground: 35 30% 97%;
+    
+    /* Accent: Golden Yellow (Sun & Prosperity) */
+    --accent: 45 95% 60%;
+    --accent-foreground: 30 20% 15%;
+    
+    --muted: 35 20% 90%;
+    --muted-foreground: 30 20% 45%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --border: 35 20% 85%;
+    --input: 35 20% 92%;
+    --ring: 142 76% 36%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --radius: 0.75rem;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Nature-inspired gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(142, 76%, 36%), hsl(142, 60%, 65%));
+    --gradient-accent: linear-gradient(135deg, hsl(45, 95%, 60%), hsl(35, 90%, 70%));
+    --gradient-earth: linear-gradient(180deg, hsl(35, 30%, 97%), hsl(35, 25%, 92%));
+    
+    /* Animations & effects */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-soft: 0 4px 20px -4px hsla(142, 76%, 36%, 0.15);
+    --shadow-glow: 0 0 30px hsla(142, 76%, 55%, 0.3);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 30 25% 8%;
+    --foreground: 35 30% 92%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 30 25% 12%;
+    --card-foreground: 35 30% 92%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 30 25% 12%;
+    --popover-foreground: 35 30% 92%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 142 70% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 142 60% 65%;
+    --primary-glow: 142 76% 55%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 30 40% 20%;
+    --secondary-foreground: 35 30% 92%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 45 85% 55%;
+    --accent-foreground: 30 20% 15%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --muted: 30 20% 18%;
+    --muted-foreground: 35 20% 65%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 30 20% 20%;
+    --input: 30 20% 18%;
+    --ring: 142 70% 45%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(142, 70%, 35%), hsl(142, 60%, 55%));
+    --gradient-accent: linear-gradient(135deg, hsl(45, 85%, 50%), hsl(35, 80%, 60%));
+    --gradient-earth: linear-gradient(180deg, hsl(30, 25%, 8%), hsl(30, 20%, 12%));
+    
+    --shadow-soft: 0 4px 20px -4px hsla(142, 70%, 35%, 0.3);
+    --shadow-glow: 0 0 30px hsla(142, 76%, 45%, 0.4);
   }
 }
 
@@ -101,5 +102,45 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Smooth transitions */
+  button, a, input, textarea {
+    transition: var(--transition-smooth);
+  }
+}
+
+@layer components {
+  /* Recording animation */
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+
+  .pulse-ring {
+    animation: pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  /* Smooth fade-in */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out;
   }
 }

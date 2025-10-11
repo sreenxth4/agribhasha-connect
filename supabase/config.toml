@@ -1,1 +1,13 @@
 project_id = "kpvozhijsdkufjbsnhlb"
+
+[functions.speech-to-text]
+verify_jwt = false
+
+[functions.translate-text]
+verify_jwt = false
+
+[functions.text-to-speech]
+verify_jwt = false
+
+[functions.document-ocr]
+verify_jwt = false
