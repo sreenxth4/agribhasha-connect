@@ -8,11 +8,26 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 const LANGUAGES = [
-  { code: "te", name: "Telugu - తెలుగు" },
-  { code: "hi", name: "Hindi - हिन्दी" },
-  { code: "ta", name: "Tamil - தமிழ்" },
-  { code: "kn", name: "Kannada - ಕನ್ನಡ" },
   { code: "en", name: "English" },
+  { code: "hi", name: "Hindi - हिन्दी" },
+  { code: "bn", name: "Bengali - বাংলা" },
+  { code: "te", name: "Telugu - తెలుగు" },
+  { code: "mr", name: "Marathi - मराठी" },
+  { code: "ta", name: "Tamil - தமிழ்" },
+  { code: "gu", name: "Gujarati - ગુજરાતી" },
+  { code: "ur", name: "Urdu - اردو" },
+  { code: "kn", name: "Kannada - ಕನ್ನಡ" },
+  { code: "ml", name: "Malayalam - മലയാളം" },
+  { code: "pa", name: "Punjabi - ਪੰਜਾਬੀ" },
+  { code: "or", name: "Odia - ଓଡ଼ିଆ" },
+  { code: "as", name: "Assamese - অসমীয়া" },
+  { code: "mai", name: "Maithili - मैथिली" },
+  { code: "sa", name: "Sanskrit - संस्कृतम्" },
+  { code: "kok", name: "Konkani - कोंकणी" },
+  { code: "sd", name: "Sindhi - سنڌي" },
+  { code: "ne", name: "Nepali - नेपाली" },
+  { code: "mni", name: "Manipuri - ꯃꯩꯇꯩꯂꯣꯟ" },
+  { code: "brx", name: "Bodo - बर'" },
 ];
 
 interface Message {
