@@ -5,6 +5,17 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Service IDs for TTS models
+const SERVICE_IDS = {
+  tts: {
+    te: 'bhashini/iitm/fastpitch-telugu_female-gpu--t4',
+    hi: 'ai4bharat/indic-tts-coqui-indo_aryan-gpu--t4',
+    ta: 'bhashini/iitm/fastpitch-tamil_female-gpu--t4',
+    kn: 'bhashini/iitm/fastpitch-kannada_female-gpu--t4',
+    en: 'ai4bharat/indic-tts-coqui-misc-gpu--t4'
+  }
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -24,33 +35,56 @@ serve(async (req) => {
       throw new Error('Bhashini credentials not configured');
     }
 
-    console.log('Processing TTS request for language:', language);
+    const lang = language || 'en';
+    const serviceId = SERVICE_IDS.tts[lang as keyof typeof SERVICE_IDS.tts] || SERVICE_IDS.tts.en;
 
-    // Call Bhashini TTS endpoint
-    const response = await fetch('https://canvas.iiit.ac.in/sandboxbeprod/generate_tts/67b842f39c21bec07537674e', {
+    console.log('Processing TTS request for language:', lang, 'with service:', serviceId);
+
+    // Use Bhashini Pipeline API format
+    const response = await fetch('https://dhruva-api.bhashini.gov.in/services/inference/pipeline', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${BHASHINI_API_KEY}`,
-        'x-user-id': BHASHINI_USER_ID,
+        'Authorization': BHASHINI_API_KEY,
+        'userID': BHASHINI_USER_ID,
       },
       body: JSON.stringify({
-        text: text,
-        language: language || 'en',
+        pipelineTasks: [
+          {
+            taskType: 'tts',
+            config: {
+              language: {
+                sourceLanguage: lang
+              },
+              serviceId: serviceId,
+              gender: 'female'
+            }
+          }
+        ],
+        inputData: {
+          input: [
+            {
+              source: text
+            }
+          ]
+        }
       }),
     });
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('Bhashini TTS error:', error);
+      console.error('Bhashini TTS error:', response.status, error);
       throw new Error(`TTS failed: ${response.status}`);
     }
 
     const data = await response.json();
     console.log('TTS response received');
 
+    // Extract audio from pipeline response
+    const audio = data.pipelineResponse?.[0]?.audio?.[0]?.audioContent || '';
+
     return new Response(
-      JSON.stringify({ audio: data.audio || data.output || '' }),
+      JSON.stringify({ audio }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,

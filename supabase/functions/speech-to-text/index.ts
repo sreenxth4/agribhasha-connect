@@ -5,6 +5,17 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Service IDs for different models
+const SERVICE_IDS = {
+  asr: {
+    te: 'ai4bharat/conformer-multilingual-indo_aryan-gpu--t4',
+    hi: 'ai4bharat/conformer-hi-gpu--t4',
+    ta: 'bhashini/iitm/asr-dravidian--gpu--t4',
+    kn: 'bhashini/iitm/asr-dravidian--gpu--t4',
+    en: 'ai4bharat/whisper-medium-en--gpu--t4'
+  }
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -24,33 +35,62 @@ serve(async (req) => {
       throw new Error('Bhashini credentials not configured');
     }
 
-    console.log('Processing ASR request for language:', language);
+    const lang = language || 'te';
+    const serviceId = SERVICE_IDS.asr[lang as keyof typeof SERVICE_IDS.asr] || SERVICE_IDS.asr.te;
+    
+    console.log('Processing ASR request for language:', lang, 'with service:', serviceId);
 
-    // Call Bhashini ASR endpoint
-    const response = await fetch('https://canvas.iiit.ac.in/sandboxbeprod/infer_asr/67b840e29c21bec07537674b', {
+    // Use Bhashini Pipeline API format
+    const response = await fetch('https://dhruva-api.bhashini.gov.in/services/inference/pipeline', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${BHASHINI_API_KEY}`,
-        'x-user-id': BHASHINI_USER_ID,
+        'Authorization': BHASHINI_API_KEY,
+        'userID': BHASHINI_USER_ID,
       },
       body: JSON.stringify({
-        audio: audio,
-        language: language || 'te',
+        pipelineTasks: [
+          {
+            taskType: 'asr',
+            config: {
+              language: {
+                sourceLanguage: lang
+              },
+              serviceId: serviceId,
+              audioFormat: 'wav',
+              samplingRate: 16000
+            }
+          }
+        ],
+        inputData: {
+          input: [
+            {
+              source: null
+            }
+          ],
+          audio: [
+            {
+              audioContent: audio
+            }
+          ]
+        }
       }),
     });
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('Bhashini ASR error:', error);
+      console.error('Bhashini ASR error:', response.status, error);
       throw new Error(`ASR failed: ${response.status}`);
     }
 
     const data = await response.json();
     console.log('ASR response received');
 
+    // Extract text from pipeline response
+    const text = data.pipelineResponse?.[0]?.output?.[0]?.source || '';
+
     return new Response(
-      JSON.stringify({ text: data.text || data.output || '' }),
+      JSON.stringify({ text }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,

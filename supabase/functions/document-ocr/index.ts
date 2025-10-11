@@ -26,32 +26,50 @@ serve(async (req) => {
 
     console.log('Processing OCR request');
 
-    // Call Bhashini OCR endpoint
-    const response = await fetch('https://canvas.iiit.ac.in/sandboxbeprod/check_ocr_status_and_infer/6711fe751595b8ffe97adc1f', {
+    // Use Bhashini Pipeline API format for OCR
+    const response = await fetch('https://dhruva-api.bhashini.gov.in/services/inference/pipeline', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${BHASHINI_API_KEY}`,
-        'x-user-id': BHASHINI_USER_ID,
+        'Authorization': BHASHINI_API_KEY,
+        'userID': BHASHINI_USER_ID,
       },
       body: JSON.stringify({
-        file: file,
+        pipelineTasks: [
+          {
+            taskType: 'ocr',
+            config: {
+              language: {
+                sourceLanguage: 'en' // OCR can detect language automatically
+              },
+              serviceId: 'ulca/ekstep/text-extraction--cpu-fsm'
+            }
+          }
+        ],
+        inputData: {
+          image: [
+            {
+              imageContent: file
+            }
+          ]
+        }
       }),
     });
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('Bhashini OCR error:', error);
+      console.error('Bhashini OCR error:', response.status, error);
       throw new Error(`OCR failed: ${response.status}`);
     }
 
     const data = await response.json();
     console.log('OCR response received');
 
+    // Extract text from pipeline response
+    const extractedText = data.pipelineResponse?.[0]?.output?.[0]?.source || '';
+
     return new Response(
-      JSON.stringify({ 
-        extractedText: data.extracted_text || data.text || data.output || '' 
-      }),
+      JSON.stringify({ extractedText }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,

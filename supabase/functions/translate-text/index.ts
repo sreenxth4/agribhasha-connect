@@ -5,6 +5,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Service IDs for translation models
+const SERVICE_IDS = {
+  translation: 'ai4bharat/indictrans-v2-all-gpu--t4'
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -26,32 +31,51 @@ serve(async (req) => {
 
     console.log(`Translating from ${sourceLang} to ${targetLang}`);
 
-    // Call Bhashini MT endpoint
-    const response = await fetch('https://canvas.iiit.ac.in/sandboxbeprod/check_model_status_and_infer/67b86729b5cc0eb923163869', {
+    // Use Bhashini Pipeline API format
+    const response = await fetch('https://dhruva-api.bhashini.gov.in/services/inference/pipeline', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${BHASHINI_API_KEY}`,
-        'x-user-id': BHASHINI_USER_ID,
+        'Authorization': BHASHINI_API_KEY,
+        'userID': BHASHINI_USER_ID,
       },
       body: JSON.stringify({
-        text: text,
-        source_language: sourceLang,
-        target_language: targetLang,
+        pipelineTasks: [
+          {
+            taskType: 'translation',
+            config: {
+              language: {
+                sourceLanguage: sourceLang,
+                targetLanguage: targetLang
+              },
+              serviceId: SERVICE_IDS.translation
+            }
+          }
+        ],
+        inputData: {
+          input: [
+            {
+              source: text
+            }
+          ]
+        }
       }),
     });
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('Bhashini MT error:', error);
+      console.error('Bhashini Translation error:', response.status, error);
       throw new Error(`Translation failed: ${response.status}`);
     }
 
     const data = await response.json();
     console.log('Translation response received');
 
+    // Extract translated text from pipeline response
+    const translatedText = data.pipelineResponse?.[0]?.output?.[0]?.target || text;
+
     return new Response(
-      JSON.stringify({ translatedText: data.translated_text || data.output || text }),
+      JSON.stringify({ translatedText }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
