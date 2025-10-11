@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.document-ocr]
 verify_jwt = false
+
+[functions.summarize-text]
+verify_jwt = false

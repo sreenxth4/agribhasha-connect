@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mic, FileText, MessageSquare, Sprout } from "lucide-react";
+import { Mic, FileText, MessageSquare, Sprout, FileCheck } from "lucide-react";
 import VoiceTranslator from "@/components/VoiceTranslator";
 import DocumentTranslator from "@/components/DocumentTranslator";
 import ChatInterface from "@/components/ChatInterface";
+import TextSummarizer from "@/components/TextSummarizer";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("voice");
@@ -28,7 +29,7 @@ const Index = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6 max-w-6xl">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 h-auto p-1 bg-card shadow-soft">
+          <TabsList className="grid w-full grid-cols-4 h-auto p-1 bg-card shadow-soft">
             <TabsTrigger 
               value="voice" 
               className="flex flex-col items-center gap-2 py-3 data-[state=active]:bg-gradient-primary data-[state=active]:text-white"
@@ -50,6 +51,13 @@ const Index = () => {
               <MessageSquare className="w-5 h-5" />
               <span className="text-sm font-medium">Chat</span>
             </TabsTrigger>
+            <TabsTrigger 
+              value="brief"
+              className="flex flex-col items-center gap-2 py-3 data-[state=active]:bg-gradient-primary data-[state=active]:text-white"
+            >
+              <FileCheck className="w-5 h-5" />
+              <span className="text-sm font-medium">Brief</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="voice" className="animate-fade-in">
@@ -62,6 +70,10 @@ const Index = () => {
 
           <TabsContent value="chat" className="animate-fade-in">
             <ChatInterface />
+          </TabsContent>
+
+          <TabsContent value="brief" className="animate-fade-in">
+            <TextSummarizer />
           </TabsContent>
         </Tabs>
       </main>
