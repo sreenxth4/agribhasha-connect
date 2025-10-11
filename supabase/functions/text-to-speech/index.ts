@@ -38,10 +38,10 @@ serve(async (req) => {
     const lang = language || 'en';
     const serviceId = SERVICE_IDS.tts[lang as keyof typeof SERVICE_IDS.tts] || SERVICE_IDS.tts.en;
 
-    console.log('Processing TTS request for language:', lang, 'with service:', serviceId);
+    console.log('Processing TTS request for language:', lang);
 
-    // Use Bhashini Pipeline API format
-    const response = await fetch('https://dhruva-api.bhashini.gov.in/services/inference/pipeline', {
+    // Use AnuvaadHub sandbox endpoint
+    const response = await fetch('https://canvas.iiit.ac.in/sandboxbeprod/generate_tts/67b842f39c21bec07537674e', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -49,25 +49,9 @@ serve(async (req) => {
         'userID': BHASHINI_USER_ID,
       },
       body: JSON.stringify({
-        pipelineTasks: [
-          {
-            taskType: 'tts',
-            config: {
-              language: {
-                sourceLanguage: lang
-              },
-              serviceId: serviceId,
-              gender: 'female'
-            }
-          }
-        ],
-        inputData: {
-          input: [
-            {
-              source: text
-            }
-          ]
-        }
+        text: text,
+        language: lang,
+        gender: 'female'
       }),
     });
 
@@ -80,8 +64,8 @@ serve(async (req) => {
     const data = await response.json();
     console.log('TTS response received');
 
-    // Extract audio from pipeline response
-    const audio = data.pipelineResponse?.[0]?.audio?.[0]?.audioContent || '';
+    // Extract audio from AnuvaadHub response
+    const audio = data.audio || data.audioContent || '';
 
     return new Response(
       JSON.stringify({ audio }),

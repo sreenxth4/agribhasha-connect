@@ -36,12 +36,11 @@ serve(async (req) => {
     }
 
     const lang = language || 'te';
-    const serviceId = SERVICE_IDS.asr[lang as keyof typeof SERVICE_IDS.asr] || SERVICE_IDS.asr.te;
     
-    console.log('Processing ASR request for language:', lang, 'with service:', serviceId);
+    console.log('Processing ASR request for language:', lang);
 
-    // Use Bhashini Pipeline API format
-    const response = await fetch('https://dhruva-api.bhashini.gov.in/services/inference/pipeline', {
+    // Use AnuvaadHub sandbox endpoint
+    const response = await fetch('https://canvas.iiit.ac.in/sandboxbeprod/infer_asr/67b840e29c21bec07537674b', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -49,45 +48,22 @@ serve(async (req) => {
         'userID': BHASHINI_USER_ID,
       },
       body: JSON.stringify({
-        pipelineTasks: [
-          {
-            taskType: 'asr',
-            config: {
-              language: {
-                sourceLanguage: lang
-              },
-              serviceId: serviceId,
-              audioFormat: 'wav',
-              samplingRate: 16000
-            }
-          }
-        ],
-        inputData: {
-          input: [
-            {
-              source: null
-            }
-          ],
-          audio: [
-            {
-              audioContent: audio
-            }
-          ]
-        }
+        audio: audio,
+        language: lang
       }),
     });
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('Bhashini ASR error:', response.status, error);
+      console.error('AnuvaadHub ASR error:', response.status, error);
       throw new Error(`ASR failed: ${response.status}`);
     }
 
     const data = await response.json();
     console.log('ASR response received');
 
-    // Extract text from pipeline response
-    const text = data.pipelineResponse?.[0]?.output?.[0]?.source || '';
+    // Extract text from AnuvaadHub response
+    const text = data.text || data.transcription || '';
 
     return new Response(
       JSON.stringify({ text }),

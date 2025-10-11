@@ -31,8 +31,8 @@ serve(async (req) => {
 
     console.log(`Translating from ${sourceLang} to ${targetLang}`);
 
-    // Use Bhashini Pipeline API format
-    const response = await fetch('https://dhruva-api.bhashini.gov.in/services/inference/pipeline', {
+    // Use AnuvaadHub sandbox endpoint
+    const response = await fetch('https://canvas.iiit.ac.in/sandboxbeprod/check_model_status_and_infer/67b86729b5cc0eb923163869', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -40,25 +40,9 @@ serve(async (req) => {
         'userID': BHASHINI_USER_ID,
       },
       body: JSON.stringify({
-        pipelineTasks: [
-          {
-            taskType: 'translation',
-            config: {
-              language: {
-                sourceLanguage: sourceLang,
-                targetLanguage: targetLang
-              },
-              serviceId: SERVICE_IDS.translation
-            }
-          }
-        ],
-        inputData: {
-          input: [
-            {
-              source: text
-            }
-          ]
-        }
+        text: text,
+        sourceLang: sourceLang,
+        targetLang: targetLang
       }),
     });
 
@@ -71,8 +55,8 @@ serve(async (req) => {
     const data = await response.json();
     console.log('Translation response received');
 
-    // Extract translated text from pipeline response
-    const translatedText = data.pipelineResponse?.[0]?.output?.[0]?.target || text;
+    // Extract translated text from AnuvaadHub response
+    const translatedText = data.translatedText || data.translation || text;
 
     return new Response(
       JSON.stringify({ translatedText }),
